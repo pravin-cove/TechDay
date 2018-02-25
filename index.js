@@ -6,7 +6,7 @@ var noble = require('noble');
  * Global variables
  */
 var isTitanWeFound = false;
-var titanWeMacAddress = ''
+var titanWeMacAddress = '80eacd000c4f'
 noble.on('stateChange', function(state) {
     if (state === 'poweredOn') {
       noble.startScanning();
@@ -16,5 +16,8 @@ noble.on('stateChange', function(state) {
   });
   noble.on('discover', (peripheral) => {
       console.log('device discovered');
-      console.log('Device found; ' + peripheral);
+      if(peripheral.id == titanWeMacAddress) {
+        console.log('Device found; ' + peripheral);
+        noble.stopScanning();
+      }
   });
