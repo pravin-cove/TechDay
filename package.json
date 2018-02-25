@@ -1,0 +1,14 @@
+{
+  "name": "automation",
+  "version": "0.0.1",
+  "description": "Home automation project to control home appliances using smart wearables",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pravin Raj",
+  "license": "ISC",
+  "dependencies": {
+    "noble": "^1.9.0"
+  }
+}
