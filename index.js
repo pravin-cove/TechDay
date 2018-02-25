@@ -44,7 +44,10 @@ noble.on('stateChange', function(state) {
    * its services.
    */
   function connectToTitanWeWatch(titanWeWatch) {
-    titanWeWatch.connect((error) => {
+      titanWeWatch.on('disconnect', () => {
+          noble.startScanning();
+      });
+      titanWeWatch.connect((error) => {
         if(error) {
             throw error;
             return
