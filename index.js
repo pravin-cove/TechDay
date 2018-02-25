@@ -58,7 +58,7 @@ noble.on('stateChange', function(state) {
    * @param {peripheral} titanWeWatch 
    */
   function discoverTitanWEServices(titanWeWatch) {
-    peripheral.discoverServices([titanWEServiceUUID], (error, services) => {
+    titanWeWatch.discoverServices([titanWEServiceUUID], (error, services) => {
         if(error) {
             throw error;
             return
