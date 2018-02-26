@@ -2,7 +2,7 @@
  * Imports for the project
  */
 var noble = require('noble');
-var huejay = require('huejay');
+let huejay = require('huejay');
 var Gpio = require('onoff').Gpio;
 
 /**
@@ -38,7 +38,7 @@ noble.on('stateChange', function(state) {
   huejay.discover()
   .then(bridges => {
     var bridgeIp;
-    for (var bridge of bridges) {
+    for (let bridge of bridges) {
       bridgeIp = bridge.ip;
     }
     console,log('Hue Bridge discovered.');
