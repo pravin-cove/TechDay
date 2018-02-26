@@ -3,16 +3,19 @@
  */
 let noble = require('noble');
 let huejay = require('huejay');
+let Gpio = require('onoff').Gpio;
 
 /**
  * Global variables
  */
 //Titan WE watch - 1
 var isTitanWeFound = false;
-var titanWEMacAddress = '80eacd000c4f'
-var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
-var titanWECharacterstic = '000034e200001000800000805f9b34fb';
-
+let titanWEMacAddress = '80eacd000c4f'
+let titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
+let titanWECharacterstic = '000034e200001000800000805f9b34fb';
+//Define switch GPIO ports
+let switch1 = new Gpio(17, 'out');
+let switch2 = new Gpio(22, 'out');
 /**
  * Listen to the state change and start scanning for BLE devices
  * when the Bluetooth adapter turns ON.
@@ -84,5 +87,17 @@ noble.on('stateChange', function(state) {
   }
 
   function buttonClickedOnTitanWEWatch(data, isNotification){
-      console.log(`Button pressed. Data: [${data}], isNotification: [${isNotification}]`)
+      switch(data){
+          case 'S1':
+            var switch1State = switch1.readSync();
+            switch1.writeSync(switch1State^1);
+            break;
+          case 'S2':
+            var switch2State = switch2.readSync();
+            switch2.writeSync(switch1State^1);
+            break;
+          case 'S3':
+            console.log('S3 clicked');
+            break;  
+      }
   }
