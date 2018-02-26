@@ -50,7 +50,7 @@ noble.on('stateChange', function(state) {
       hueBridgeClient.bridge.ping()
         .then(() => {
             console.log('Successful connection');
-            client.bridge.isAuthenticated()
+            hueBridgeClient.bridge.isAuthenticated()
                 .then(() => {
                     console.log('Successful authentication');
                 })
