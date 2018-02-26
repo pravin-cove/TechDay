@@ -32,6 +32,21 @@ noble.on('stateChange', function(state) {
   });
 
   /**
+   * See if we have found all required device and connect to those devices
+   * and stop scanning once all required devices are found.
+   */
+  noble.on('discover', (peripheral) => {
+    if(peripheral.id == titanWEMacAddress) {
+      console.log('Titan WE watch discovered.');
+      isTitanWeFound = true;
+      connectToTitanWeWatch(peripheral);
+    }
+    if(isTitanWeFound) {
+      noble.stopScanning();
+    }
+});
+
+  /**
    * Start searching for Philips Hue Bridge and if discovered create a client.
    */
   console.log('Searching for Hue Bridges in local network...')
@@ -64,20 +79,6 @@ noble.on('stateChange', function(state) {
     })
   .catch(error => {
     console.log(`An error occurred: ${error.message}`);
-  });
-  /**
-   * See if we have found all required device and connect to those devices
-   * and stop scanning once all required devices are found.
-   */
-  noble.on('discover', (peripheral) => {
-      if(peripheral.id == titanWEMacAddress) {
-        console.log('Titan WE watch discovered.');
-        isTitanWeFound = true;
-        connectToTitanWeWatch(peripheral);
-      }
-      if(isTitanWeFound) {
-        noble.stopScanning();
-      }
   });
 
   /**
