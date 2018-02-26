@@ -136,12 +136,11 @@ noble.on('stateChange', function(state) {
   hueBridgeClient.groups.getById(1)
   .then(group => {
     group.incrementBrightness        = 50;
-
     return hueBridgeClient.groups.save(group);
   })
   .then(group => {
     console.log('New brightness:', group.brightness);
-    if(group.brightness = 254){
+    if(group.brightness == 254){
     hueBridgeClient.groups.getById(1)
   .then(group => {
     group.brightness        = 10;
@@ -152,7 +151,8 @@ noble.on('stateChange', function(state) {
   })
   .catch(error => {
     console.log(error.stack);
-  }); }
+  }); 
+}
   })
   .catch(error => {
     console.log(error.stack);
