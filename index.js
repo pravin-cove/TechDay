@@ -141,7 +141,7 @@ noble.on('stateChange', function(state) {
   })
   .then(group => {
     console.log('New brightness:', group.brightness);
-    if(group.brightness = 254){}
+    if(group.brightness = 254){
     hueBridgeClient.groups.getById(1)
   .then(group => {
     group.brightness        = 10;
