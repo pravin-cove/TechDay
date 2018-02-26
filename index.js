@@ -6,6 +6,7 @@ var noble = require('noble');
 /**
  * Global variables
  */
+//Titan WE watch - 1
 var isTitanWeFound = false;
 var titanWEMacAddress = '80eacd000c4f'
 var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
@@ -17,9 +18,10 @@ var titanWECharacterstic = '000034e200001000800000805f9b34fb';
  */
 noble.on('stateChange', function(state) {
     if (state === 'poweredOn') {
-      noble.startScanning();
+        console.log('Scanning for devices...');
+        noble.startScanning();
     } else {
-      noble.stopScanning();
+        noble.stopScanning();
     }
   });
 
@@ -28,9 +30,8 @@ noble.on('stateChange', function(state) {
    * and stop scanning once all required devices are found.
    */
   noble.on('discover', (peripheral) => {
-      console.log('device discovered');
       if(peripheral.id == titanWEMacAddress) {
-        console.log('Titan We watch discovered.');
+        console.log('Titan WE watch discovered.');
         isTitanWeFound = true;
         connectToTitanWeWatch(peripheral);
       }
@@ -45,6 +46,8 @@ noble.on('stateChange', function(state) {
    */
   function connectToTitanWeWatch(titanWeWatch) {
       titanWeWatch.on('disconnect', () => {
+          console.log('Titan WE watch disconnected.');
+          console.log('Scanning for devices...');
           noble.startScanning();
       });
       titanWeWatch.connect((error) => {
@@ -61,15 +64,18 @@ noble.on('stateChange', function(state) {
    * @param {peripheral} titanWeWatch 
    */
   function discoverTitanWEServices(titanWeWatch) {
+      console.log('Scanning for services...')
     titanWeWatch.discoverServices([titanWEServiceUUID], (error, services) => {
         if(error) {
             throw error;
             return
         }
         if(services[0]){
-            console.log('Service discovered in Titan WE watch.');
+            console.log('Services found for Titan WE watch.');
+            console.log('Scanning for characteristics...');
             services[0].discoverCharacteristics(titanWECharacterstic, (error, characteristics) => {
-                console.log('Characteristics found in Titan WE watch.');
+                console.log('Characteristics found for Titan WE watch.');
+                console.log('Titan WE watch connected and ready to be used.');
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
             });
         }
