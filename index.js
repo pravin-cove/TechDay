@@ -16,6 +16,8 @@ var titanWECharacterstic = '000034e200001000800000805f9b34fb';
 //Define switch GPIO ports
 var switch1 = new Gpio(17, 'out');
 var switch2 = new Gpio(22, 'out');
+//Define a client for Philips Hue Bridge.
+var hueBridgeClient;
 /**
  * Listen to the state change and start scanning for BLE devices
  * when the Bluetooth adapter turns ON.
@@ -29,6 +31,39 @@ noble.on('stateChange', function(state) {
     }
   });
 
+  /**
+   * Start searching for Philips Hue Bridge and if discovered create a client.
+   */
+  console.log('Searching for Hue Bridges in local network...')
+  huejay.discover()
+  .then(bridges => {
+      console,log('Hue Bridge discovered.');
+      console.log('Connecting to Hue  Bridge...')
+      hueBridgeClient = new huejay.Client({
+        host:     bridges[0].ip,
+        username: '5OnfNdyaHCAWjp6fv9LY5Fn6Hi2MoDk8o0gZHyYu',
+        timeout:  15000,            
+      });
+      hueClient.bridge.ping()
+        .then(() => {
+            console.log('Connection established successfully.');
+            console.log('Authenticating Hue Bridge.');
+            client.bridge.isAuthenticated()
+                .then(() => {
+                    console.log('Authentication successful');
+                    console.log('Hue Bridge is ready to use.');
+                })
+                .catch(error => {
+                    console.log('Could not authenticate in Hue Bridge.');
+                });
+        })
+        .catch(error => {
+            console.log('Could not connect to Hue Bridge.');
+        });
+    })
+  .catch(error => {
+    console.log(`An error occurred: ${error.message}`);
+  });
   /**
    * See if we have found all required device and connect to those devices
    * and stop scanning once all required devices are found.
