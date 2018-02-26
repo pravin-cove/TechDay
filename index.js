@@ -1,7 +1,8 @@
 /**
  * Imports for the project
  */
-var noble = require('noble');
+let noble = require('noble');
+let huejay = require('huejay');
 
 /**
  * Global variables
