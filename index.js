@@ -1,21 +1,21 @@
 /**
  * Imports for the project
  */
-let noble = require('noble');
-let huejay = require('huejay');
-let Gpio = require('onoff').Gpio;
+var noble = require('noble');
+var huejay = require('huejay');
+var Gpio = require('onoff').Gpio;
 
 /**
  * Global variables
  */
 //Titan WE watch - 1
 var isTitanWeFound = false;
-let titanWEMacAddress = '80eacd000c4f'
-let titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
-let titanWECharacterstic = '000034e200001000800000805f9b34fb';
+var titanWEMacAddress = '80eacd000c4f'
+var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
+var titanWECharacterstic = '000034e200001000800000805f9b34fb';
 //Define switch GPIO ports
-let switch1 = new Gpio(17, 'out');
-let switch2 = new Gpio(22, 'out');
+var switch1 = new Gpio(17, 'out');
+var switch2 = new Gpio(22, 'out');
 /**
  * Listen to the state change and start scanning for BLE devices
  * when the Bluetooth adapter turns ON.
