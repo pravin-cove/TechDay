@@ -137,7 +137,8 @@ noble.on('stateChange', function(state) {
             break;
           case 'S3':
             console.log('S3 clicked');
-            client.lights.getAll()
+            if(hueBridgeClient) {
+            hueBridgeClient.lights.getAll()
   .then(lights => {
     for (let light of lights) {
       console.log(`Light [${light.id}]: ${light.name}`);
@@ -167,6 +168,7 @@ noble.on('stateChange', function(state) {
       console.log();
     }
   });
+}
             break;  
       }
   }
