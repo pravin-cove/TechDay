@@ -36,7 +36,7 @@ noble.on('stateChange', function(state) {
    * and stop scanning once all required devices are found.
    */
   noble.on('discover', (peripheral) => {
-      console.log(`Found [${peripheral.advertisement.localName}]`);
+     // console.log(`Found [${peripheral.advertisement.localName}]`);
     if(peripheral.id == titanWEMacAddress) {
       console.log('Titan WE watch discovered.');
       isTitanWeFound = true;
@@ -125,6 +125,7 @@ noble.on('stateChange', function(state) {
   }
 
   function buttonClickedOnTitanWEWatch(data, isNotification){
+      console.log(`Button pressed ${data}`);
       switch(data.toString()){
           case 'S1':
             var switch1State = switch1.readSync();
