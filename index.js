@@ -94,7 +94,7 @@ noble.on('stateChange', function(state) {
             break;
           case 'S2':
             var switch2State = switch2.readSync();
-            switch2.writeSync(switch1State^1);
+            switch2.writeSync(switch2State^1);
             break;
           case 'S3':
             console.log('S3 clicked');
