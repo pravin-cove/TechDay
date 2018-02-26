@@ -37,18 +37,30 @@ noble.on('stateChange', function(state) {
   console.log('Searching for Hue Bridges in local network...')
   huejay.discover()
   .then(bridges => {
-    var bridgeIp;
     for (let bridge of bridges) {
+      console.log(`Bridge found -> Id: ${bridge.id}, IP: ${bridge.ip}`);
       bridgeIp = bridge.ip;
     }
-    console,log('Hue Bridge discovered.');
-    console.log('Connecting to Hue  Bridge...')
-    hueBridgeClient = new huejay.Client({
+    hueClient = new huejay.Client({
         host:     bridgeIp,
         username: '5OnfNdyaHCAWjp6fv9LY5Fn6Hi2MoDk8o0gZHyYu',
         timeout:  15000,            
       });
-  })
+      hueClient.bridge.ping()
+        .then(() => {
+            console.log('Successful connection');
+            client.bridge.isAuthenticated()
+                .then(() => {
+                    console.log('Successful authentication');
+                })
+                .catch(error => {
+                    console.log('Could not authenticate');
+                });
+        })
+        .catch(error => {
+            console.log('Could not connect');
+        });
+    })
   .catch(error => {
     console.log(`An error occurred: ${error.message}`);
   });
