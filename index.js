@@ -87,16 +87,16 @@ noble.on('stateChange', function(state) {
   }
 
   function buttonClickedOnTitanWEWatch(data, isNotification){
-      switch(data){
-          case 0x5331:
+      switch(data.toString()){
+          case 'S1':
             var switch1State = switch1.readSync();
             switch1.writeSync(switch1State^1);
             break;
-          case 0x5332:
+          case 'S2':
             var switch2State = switch2.readSync();
             switch2.writeSync(switch1State^1);
             break;
-          case 0x5333:
+          case 'S3':
             console.log('S3 clicked');
             break;  
       }
