@@ -35,7 +35,7 @@ noble.on('stateChange', function(state) {
    * Start searching for Philips Hue Bridge and if discovered create a client.
    */
   console.log('Searching for Hue Bridges in local network...')
-  huejay.discover({strategy: 'all'})
+  huejay.discover({strategy: 'upnp'})
   .then(bridges => {
       console,log('Hue Bridge discovered.');
       console.log('Connecting to Hue  Bridge...')
