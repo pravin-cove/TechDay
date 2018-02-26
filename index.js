@@ -2,7 +2,7 @@
  * Imports for the project
  */
 var noble = require('noble');
-let huejay = require('huejay');
+var huejay = require('huejay');
 var Gpio = require('onoff').Gpio;
 
 /**
