@@ -164,13 +164,14 @@ noble.on('stateChange', function(state) {
 
           if(light.reachable && light.on) {
               console.log('Light is reachable and ON')
-              brightness = light.brightness + 10;
-              if(brightness > 254) {
-                  brightness = 10;
-              }
-              console.log('Setting brightness to -> ' + brightness);
-              light.brightness = brightness;
-              light.save();
+            //   brightness = light.brightness + 10;
+            //   if(brightness > 254) {
+            //       brightness = 10;
+            //   }
+            //   console.log('Setting brightness to -> ' + brightness);
+            //   light.brightness = brightness;
+            //   light.save();
+            light.incrementBrightness();
           }
         }
       });
