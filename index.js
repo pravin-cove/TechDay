@@ -140,7 +140,7 @@ noble.on('stateChange', function(state) {
     return hueBridgeClient.groups.save(group);
   })
   .then(group => {
-    console.log('New saturation:', group.saturation);
+    console.log('New brightness:', group.brightness);
   })
   .catch(error => {
     console.log(error.stack);
