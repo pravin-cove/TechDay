@@ -38,7 +38,7 @@ noble.on('stateChange', function(state) {
   huejay.discover()
   .then(bridges => {
     var bridgeIp;
-    for (let bridge of bridges) {
+    for (var bridge of bridges) {
       bridgeIp = bridge.ip;
     }
     console,log('Hue Bridge discovered.');
