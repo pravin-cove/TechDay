@@ -2,7 +2,7 @@
  * Imports for the project
  */
 var noble = require('noble');
-var huejay = require('huejay');
+let huejay = require('huejay');
 var Gpio = require('onoff').Gpio;
 
 /**
@@ -37,30 +37,18 @@ noble.on('stateChange', function(state) {
   console.log('Searching for Hue Bridges in local network...')
   huejay.discover()
   .then(bridges => {
-      console,log('Hue Bridge discovered.');
-      console.log('Connecting to Hue  Bridge...')
-      hueBridgeClient = new huejay.Client({
-        host:     bridges[0].ip,
+    var bridgeIp;
+    for (let bridge of bridges) {
+      bridgeIp = bridge.ip;
+    }
+    console,log('Hue Bridge discovered.');
+    console.log('Connecting to Hue  Bridge...')
+    hueBridgeClient = new huejay.Client({
+        host:     bridgeIp,
         username: '5OnfNdyaHCAWjp6fv9LY5Fn6Hi2MoDk8o0gZHyYu',
         timeout:  15000,            
       });
-      hueClient.bridge.ping()
-        .then(() => {
-            console.log('Connection established successfully.');
-            console.log('Authenticating Hue Bridge.');
-            client.bridge.isAuthenticated()
-                .then(() => {
-                    console.log('Authentication successful');
-                    console.log('Hue Bridge is ready to use.');
-                })
-                .catch(error => {
-                    console.log('Could not authenticate in Hue Bridge.');
-                });
-        })
-        .catch(error => {
-            console.log('Could not connect to Hue Bridge.');
-        });
-    })
+  })
   .catch(error => {
     console.log(`An error occurred: ${error.message}`);
   });
