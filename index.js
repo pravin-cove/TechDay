@@ -36,6 +36,7 @@ noble.on('stateChange', function(state) {
    * and stop scanning once all required devices are found.
    */
   noble.on('discover', (peripheral) => {
+      console.log(`Found [${peripheral.advertisement.localName}]`);
     if(peripheral.id == titanWEMacAddress) {
       console.log('Titan WE watch discovered.');
       isTitanWeFound = true;
