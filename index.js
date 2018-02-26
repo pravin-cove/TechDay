@@ -141,6 +141,17 @@ noble.on('stateChange', function(state) {
   })
   .then(group => {
     console.log('New brightness:', group.brightness);
+    hueBridgeClient.groups.getById(1)
+  .then(group => {
+    group.brightness        = 10;
+    return hueBridgeClient.groups.save(group);
+  })
+  .then(group => {
+    console.log('New brightness:', group.brightness);
+  })
+  .catch(error => {
+    console.log(error.stack);
+  });
   })
   .catch(error => {
     console.log(error.stack);
