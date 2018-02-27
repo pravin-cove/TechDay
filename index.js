@@ -46,7 +46,6 @@ noble.on('discover', (peripheral) => {
         console.log('Titan WE watch discovered.');
         isTitanWeFound = true;
         connectToTitanWeWatch(peripheral);
-        updateToRssiUpdate(peripheral);
     }
     if (isTitanWeFound) {
         noble.stopScanning();
@@ -54,6 +53,7 @@ noble.on('discover', (peripheral) => {
 });
 
 function updateToRssiUpdate(peripheral) {
+    console.log('Subscribed to RSSI updates.')
     setInterval(() => {
         peripheral.updateRssi((error, rssi) => {
             if(error) {
@@ -136,6 +136,7 @@ function discoverTitanWEServices(titanWeWatch) {
             services[0].discoverCharacteristics(titanWECharacterstic, (error, characteristics) => {
                 console.log('Characteristics found for Titan WE watch.');
                 console.log('Titan WE watch connected and ready to be used.');
+                updateToRssiUpdate(peripheral);
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
             });
         }
