@@ -154,10 +154,15 @@ function changeScene() {
                 group.scene = scenes[sceneIndex];
                 return hueBridgeClient.groups.save(group);
             })
+            .then(group => {
+                sceneIndex++;
+                if (sceneIndex === 10) {
+                    sceneIndex = 0;
+                }
+            })
             .catch(error => {
                 console.log(error.stack);
             });
-            sceneIndex++;
     }
 }
 
