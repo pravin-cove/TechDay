@@ -17,6 +17,7 @@ var TRIGGER_PIN = 23;
 var TIMEOUT = 750;
 var DELAY = 10;
 var MEASUREMENT_PER_SAMPLE = 5;
+var DIFFERENCE_IN_DISTANCE= 50;
 // RSSI update interval
 var RSSI_UPDATE_INTERVAL = 2000;
 var rssiUpdates;
@@ -60,14 +61,15 @@ usonic.init((error) => {
 function waveDetect(distances) {
     var distance = statistics.median(distances);
 
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
+    // process.stdout.clearLine();
+    // process.stdout.cursorTo(0);
 
     if (distance < 0) {
-        process.stdout.write('Error: Measurement timeout.\n');
+        // process.stdout.write('Error: Measurement timeout.\n');
+        console.log('Error in measurement.');
     } else {
-        process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
-        if (distance < 50 && prevDistance > 50) {
+        // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+        if (distance < DIFFERENCE_IN_DISTANCE && prevDistance > DIFFERENCE_IN_DISTANCE) {
             changeScene();
         }
         prevDistance = distance;
@@ -91,7 +93,6 @@ noble.on('stateChange', function (state) {
  * and stop scanning once all required devices are found.
  */
 noble.on('discover', (peripheral) => {
-    // console.log(`Found [${peripheral.advertisement.localName}]`);
     if (peripheral.id == titanWEMacAddress) {
         console.log('Titan WE watch discovered.');
         isTitanWeFound = true;
