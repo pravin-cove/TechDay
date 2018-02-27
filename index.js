@@ -156,7 +156,7 @@ function changeScene() {
             })
             .then(group => {
                 sceneIndex++;
-                if (sceneIndex === 10) {
+                if (sceneIndex === 11) {
                     sceneIndex = 0;
                 }
             })
