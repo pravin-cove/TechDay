@@ -3,6 +3,7 @@
 var readline = require('readline');
 var statistics = require('math-statistics');
 var usonic = require('mmm-usonic');
+var prevDistance = 200;
 
 var print = function (distances) {
     var distance = statistics.median(distances);
@@ -14,6 +15,10 @@ var print = function (distances) {
         process.stdout.write('Error: Measurement timeout.\n');
     } else {
         process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+        if(distance < 100 && prevDistance > 100) {
+            console.log('Waved...');
+        }
+        prevDistance = distance;
     }
 };
 
