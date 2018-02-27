@@ -54,8 +54,8 @@ noble.on('discover', (peripheral) => {
 });
 
 function updateToRssiUpdate(peripheral) {
-    console.log('Subscribled to Rssi');
     if (peripheral) {
+        console.log('Subscribled to Rssi');
         setInterval(() => {
             peripheral.once('rssiUpdate', (rssi) => {
                 console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
