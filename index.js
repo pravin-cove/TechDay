@@ -162,7 +162,7 @@ function findScenes() {
             .then(scenes => {
                 for (let scene of scenes) {
                     console.log(`Scene [${scene.id}]: ${scene.name}`);
-                    console.log('  Lights:', scene.lightIds.join(', '));
+                    console.log('Lights:', scene.lightIds.join(', '));
                     console.log();
                 }
             });
