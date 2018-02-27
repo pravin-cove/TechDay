@@ -12,7 +12,7 @@ var EXIT_GRACE_PERIOD = 15000; // milliseconds
 var inRange = [];
 
 noble.on('discover', function(peripheral) {
-  if (peripheral.rssi < RSSI_THRESHOLD && peripheral.id == '80eacd000c4f') {
+  if (peripheral.rssi < RSSI_THRESHOLD && peripheral.id != '80eacd000c4f') {
     // ignore
     return;
   }
