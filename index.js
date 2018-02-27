@@ -132,8 +132,8 @@ function buttonClickedOnTitanWEWatch(data, isNotification) {
             switch1.writeSync(switch1State ^ 1);
             break;
         case 'S2':
-            //changeScene();
-            findScenes();
+            changeScene();
+            // findScenes();
             break;
         case 'S3':
             console.log('S3 clicked');
@@ -147,24 +147,8 @@ function changeScene() {
     if (hueBridgeClient) {
         hueBridgeClient.groups.getById(1)
             .then(group => {
-                group.incrementBrightness = 50;
+                group.scene = '0kWGStrvP36KHY6';
                 return hueBridgeClient.groups.save(group);
-            })
-            .then(group => {
-                console.log('New brightness:', group.brightness);
-                if (group.brightness == 254) {
-                    hueBridgeClient.groups.getById(1)
-                        .then(group => {
-                            group.brightness = 10;
-                            return hueBridgeClient.groups.save(group);
-                        })
-                        .then(group => {
-                            console.log('New brightness:', group.brightness);
-                        })
-                        .catch(error => {
-                            console.log(error.stack);
-                        });
-                }
             })
             .catch(error => {
                 console.log(error.stack);
