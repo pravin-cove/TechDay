@@ -8,6 +8,8 @@ var Gpio = require('onoff').Gpio;
 /**
  * Global variables
  */
+// RSSI update interval
+var RSSI_UPDATE_INTERVAL = 2000;
 //Titan WE watch - 1
 var isTitanWeFound = false;
 var titanWEMacAddress = '80eacd000c4f'
@@ -53,9 +55,13 @@ noble.on('discover', (peripheral) => {
 
 function updateToRssiUpdate(peripheral) {
     console.log('Subscribled to Rssi');
-    peripheral.on('rssiUpdate', function (rssi) {
-        console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
-    });
+    if (peripheral) {
+        setInterval(() => {
+            peripheral.once('rssiUpdate', (rssi) => {
+                console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
+            });
+        }, RSSI_UPDATE_INTERVAL);
+    }
 }
 
 /**
