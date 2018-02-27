@@ -41,10 +41,11 @@ usonic.init((error) => {
         console.log(error);
     } else {
         var sensor = usonic.createSensor(ECHO_PIN, TRIGGER_PIN, TIMEOUT);
+        var distances;
         (function measure() {
             if (!distances || distances.length === MEASUREMENT_PER_SAMPLE) {
                 if (distances) {
-                    print(distances);
+                    waveDetect(distances);
                 }
                 distances = [];
             }
