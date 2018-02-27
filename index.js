@@ -49,25 +49,20 @@ noble.on('discover', (peripheral) => {
         updateToRssiUpdate(peripheral);
     }
     if (isTitanWeFound) {
-        // noble.stopScanning();
+        noble.stopScanning();
     }
 });
 
 function updateToRssiUpdate(peripheral) {
-    // peripheral.on('rssiUpdate', (rssi) => {
-    //     console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
-    // });
-    peripheral.updateRssi((error, rssi) => {
-        console.log(peripheral.uuid + ' RSSI:' + peripheral.rssi + ' update RSSI + ' + rssi + ' : Error :' + error);
-    });
-    // if (peripheral) {
-    //     console.log('Subscribled to Rssi');
-    //     setInterval(() => {
-    //         peripheral.once('rssiUpdate', (rssi) => {
-    //             console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
-    //         });
-    //     }, RSSI_UPDATE_INTERVAL);
-    // }
+    setInterval(() => {
+        peripheral.updateRssi((error, rssi) => {
+            if(error) {
+                throw error;
+                return;
+            }
+            if(rssi < 0) console.log("here is my RSSI: "+rssi);
+        })
+    },60)
 }
 
 /**
