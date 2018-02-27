@@ -44,11 +44,18 @@ noble.on('discover', (peripheral) => {
         console.log('Titan WE watch discovered.');
         isTitanWeFound = true;
         connectToTitanWeWatch(peripheral);
+        updateToRssiUpdate(peripheral);
     }
     if (isTitanWeFound) {
         noble.stopScanning();
     }
 });
+
+function updateToRssiUpdate(peripheral) {
+    peripheral.on('rssiUpdate', function (rssi) {
+        console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
+    });
+}
 
 /**
  * Start searching for Philips Hue Bridge and if discovered create a client.
