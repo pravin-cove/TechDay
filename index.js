@@ -67,7 +67,7 @@ function waveDetect(distances) {
         process.stdout.write('Error: Measurement timeout.\n');
     } else {
         process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
-        if (distance < 50 && prevDistance > 100) {
+        if (distance < 50 && prevDistance > 50) {
             changeScene();
         }
         prevDistance = distance;
