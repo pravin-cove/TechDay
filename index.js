@@ -4,10 +4,19 @@
 var noble = require('noble');
 let huejay = require('huejay');
 var Gpio = require('onoff').Gpio;
+var statistics = require('math-statistics');
+var usonic = require('mmm-usonic');
 
 /**
  * Global variables
  */
+// Ultrasonis sensor
+var prevDistance = 1000;
+var ECHO_PIN = 24;
+var TRIGGER_PIN = 23;
+var TIMEOUT = 750;
+var DELAY = 10;
+var MEASUREMENT_PER_SAMPLE = 5;
 // RSSI update interval
 var RSSI_UPDATE_INTERVAL = 2000;
 var rssiUpdates;
@@ -24,6 +33,42 @@ var hueBridgeClient;
 var scenes = ['ALSAIYkjGcoTqZT', 'zz9M5RxxqRL8Cc2', '0kWGStrvP36KHY6', 'K-AyEndxZK6Kaa3', 'WozW-BVdWQf6k9Z', '8DuWm-MRNH7HIuk', '1-c4mo69pPP0KuD', 'c-erWk-Q5i5DdnD', 'PzFrXlOGzTz8pLs', '7MJTcWq40n1IIJW', '76mpkohdYNKlfcq'];
 var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset', 'Arctic aurora', 'Energize', 'Relax', 'Dimmed', 'Bright', 'Concentrate', 'Nightlight'];
 var sceneIndex = 0;
+/**
+ * Initialise Ultrasonic sensor for wave detection
+ */
+usonic.init((error) => {
+    if (error) {
+        console.log(error);
+    } else {
+        var sensor = usonic.createSensor(ECHO_PIN, TRIGGER_PIN, TIMEOUT);
+        (function measure() {
+            if (!distances || distances.length === MEASUREMENT_PER_SAMPLE) {
+                if (distances) {
+                    print(distances);
+                }
+                distances = [];
+            }
+            setTimeout(function () {
+                distances.push(sensor());
+                measure();
+            }, DELAY);
+        }());
+    }
+});
+
+function waveDetect(distances) {
+    var distance = statistics.median(distances);
+
+    if (distance < 0) {
+        process.stdout.write('Error: Measurement timeout.\n');
+    } else {
+        // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+        if (distance < 100 && prevDistance > 100) {
+            console.log('Waved...');
+        }
+        prevDistance = distance;
+    }
+}
 /**
  * Listen to the state change and start scanning for BLE devices
  * when the Bluetooth adapter turns ON.
@@ -57,13 +102,13 @@ function updateToRssiUpdate(peripheral) {
     console.log('Subscribed to RSSI updates.')
     rssiUpdates = setInterval(() => {
         peripheral.updateRssi((error, rssi) => {
-            if(error) {
+            if (error) {
                 throw error;
                 return;
             }
-            if(rssi < 0) console.log("here is my RSSI: "+rssi);
+            if (rssi < 0) console.log("here is my RSSI: " + rssi);
         })
-    },1000)
+    }, 1000)
 }
 
 /**
@@ -109,7 +154,7 @@ function connectToTitanWeWatch(titanWeWatch) {
     titanWeWatch.on('disconnect', () => {
         console.log('Titan WE watch disconnected.');
         console.log('Scanning for devices...');
-        if(rssiUpdates) {
+        if (rssiUpdates) {
             console.log('Unsubscribed to RSSI updates.')
             clearInterval(rssiUpdates);
             delete rssiUpdates;
