@@ -10,6 +10,7 @@ var Gpio = require('onoff').Gpio;
  */
 // RSSI update interval
 var RSSI_UPDATE_INTERVAL = 2000;
+var rssiUpdates;
 //Titan WE watch - 1
 var isTitanWeFound = false;
 var titanWEMacAddress = '80eacd000c4f'
@@ -54,7 +55,7 @@ noble.on('discover', (peripheral) => {
 
 function updateToRssiUpdate(peripheral) {
     console.log('Subscribed to RSSI updates.')
-    setInterval(() => {
+    rssiUpdates = setInterval(() => {
         peripheral.updateRssi((error, rssi) => {
             if(error) {
                 throw error;
@@ -108,6 +109,11 @@ function connectToTitanWeWatch(titanWeWatch) {
     titanWeWatch.on('disconnect', () => {
         console.log('Titan WE watch disconnected.');
         console.log('Scanning for devices...');
+        if(rssiUpdates) {
+            console.log('Unsubscribed to RSSI updates.')
+            clearInterval(rssiUpdates);
+            delete rssiUpdates;
+        }
         noble.startScanning();
     });
     titanWeWatch.connect((error) => {
