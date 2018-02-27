@@ -12,7 +12,7 @@
     "async": "^2.6.0",
     "huejay": "^1.8.0",
     "math-statistics": "^1.2.0",
-    "mmm-usonic": "^2.5.3",
+    "mmm-usonic": "git://github.com/mochman/mmm-usonic.git#fb43599",
     "noble": "^1.9.0",
     "onoff": "^1.2.0"
   }
