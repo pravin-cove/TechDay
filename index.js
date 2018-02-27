@@ -136,7 +136,7 @@ function discoverTitanWEServices(titanWeWatch) {
             services[0].discoverCharacteristics(titanWECharacterstic, (error, characteristics) => {
                 console.log('Characteristics found for Titan WE watch.');
                 console.log('Titan WE watch connected and ready to be used.');
-                updateToRssiUpdate(peripheral);
+                updateToRssiUpdate(titanWeWatch);
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
             });
         }
