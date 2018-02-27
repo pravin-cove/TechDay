@@ -52,6 +52,7 @@ noble.on('discover', (peripheral) => {
 });
 
 function updateToRssiUpdate(peripheral) {
+    console.log('Subscribled to Rssi');
     peripheral.on('rssiUpdate', function (rssi) {
         console.log(peripheral.uuid + ' RSSI updated : ' + rssi);
     });
