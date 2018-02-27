@@ -65,7 +65,7 @@ function waveDetect(distances) {
     } else {
         // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < 100 && prevDistance > 100) {
-            console.log('Waved...');
+            changeScene();
         }
         prevDistance = distance;
     }
