@@ -18,6 +18,9 @@ var switch1 = new Gpio(17, 'out');
 var switch2 = new Gpio(22, 'out');
 //Define a client for Philips Hue Bridge.
 var hueBridgeClient;
+var scenes = ['ALSAIYkjGcoTqZT', 'zz9M5RxxqRL8Cc2', '0kWGStrvP36KHY6', 'K-AyEndxZK6Kaa3', 'WozW-BVdWQf6k9Z', '8DuWm-MRNH7HIuk', '1-c4mo69pPP0KuD', 'c-erWk-Q5i5DdnD', 'PzFrXlOGzTz8pLs', '7MJTcWq40n1IIJW', '76mpkohdYNKlfcq'];
+var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset', 'Arctic aurora', 'Energize', 'Relax', 'Dimmed', 'Bright', 'Concentrate', 'Nightlight'];
+var sceneIndex = 0;
 /**
  * Listen to the state change and start scanning for BLE devices
  * when the Bluetooth adapter turns ON.
@@ -132,8 +135,8 @@ function buttonClickedOnTitanWEWatch(data, isNotification) {
             switch1.writeSync(switch1State ^ 1);
             break;
         case 'S2':
-            // changeScene();
-            findScenes();
+            changeScene();
+            // findScenes();
             break;
         case 'S3':
             console.log('S3 clicked');
@@ -145,14 +148,16 @@ function buttonClickedOnTitanWEWatch(data, isNotification) {
 
 function changeScene() {
     if (hueBridgeClient) {
+        console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
         hueBridgeClient.groups.getById(1)
             .then(group => {
-                group.scene = '0kWGStrvP36KHY6';
+                group.scene = scenes[sceneIndex];
                 return hueBridgeClient.groups.save(group);
             })
             .catch(error => {
                 console.log(error.stack);
             });
+            sceneIndex++;
     }
 }
 
