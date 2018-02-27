@@ -11,6 +11,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "huejay": "^1.8.0",
+    "math-statistics": "^1.2.0",
     "noble": "^1.9.0",
     "onoff": "^1.2.0"
   }
