@@ -60,10 +60,13 @@ usonic.init((error) => {
 function waveDetect(distances) {
     var distance = statistics.median(distances);
 
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+
     if (distance < 0) {
         process.stdout.write('Error: Measurement timeout.\n');
     } else {
-        // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+        process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < 100 && prevDistance > 100) {
             changeScene();
         }
