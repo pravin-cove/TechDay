@@ -62,7 +62,7 @@ function updateToRssiUpdate(peripheral) {
             }
             if(rssi < 0) console.log("here is my RSSI: "+rssi);
         })
-    },60)
+    },1000)
 }
 
 /**
