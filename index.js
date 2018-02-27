@@ -132,8 +132,8 @@ function buttonClickedOnTitanWEWatch(data, isNotification) {
             switch1.writeSync(switch1State ^ 1);
             break;
         case 'S2':
-            changeScene();
-            // findScenes();
+            // changeScene();
+            findScenes();
             break;
         case 'S3':
             console.log('S3 clicked');
