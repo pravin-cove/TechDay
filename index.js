@@ -265,7 +265,7 @@ noble.on('scanStart', () => {
     console.log('Scanning for devices...');
 });
 
-noble.on('stopScan', () => {
+noble.on('scanStop', () => {
     console.log('BLE scan stopped...');
 });
 
