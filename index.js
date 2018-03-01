@@ -197,7 +197,7 @@ huejay.discover()
 function connectToTitanWeWatch(titanWeWatch) {
     titanWeWatch.on('disconnect', () => {
         if(titanWeWatch === titanWE1) {
-            console.log('Titan WE watch 1 disconnected.');
+            console.log('       Titan WE watch 1 disconnected.');
             if (titanWE1RssiUpdates) {
                 console.log('Unsubscribed to RSSI updates.')
                 clearInterval(titanWE1RssiUpdates);
@@ -206,7 +206,7 @@ function connectToTitanWeWatch(titanWeWatch) {
             delete titanWE1;
             isTitanWe1Found = false;
         } else if (titanWeWatch === titanWE2) {
-            console.log('Titan WE watch 2 disconnected.');
+            console.log('       Titan WE watch 2 disconnected.');
             if (titanWE2RssiUpdates) {
                 console.log('Unsubscribed to RSSI updates.')
                 clearInterval(titanWE2RssiUpdates);
@@ -238,6 +238,10 @@ function connectToTitanWeWatch(titanWeWatch) {
 
 noble.on('scanStart', () => {
     console.log('Scanning for devices...');
+});
+
+noble.on('stopScan', () => {
+    console.log('BLE scan stopped...');
 });
 
 /**
