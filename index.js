@@ -241,9 +241,6 @@ function connectToTitanWeWatch(titanWeWatch) {
             }
             delete titanWE2;
             isTitanWe2Found = false;
-        }
-
-        if (!isTitanWe1Found && !isTitanWe2Found) {
             turnOFFLights();
         }
 
