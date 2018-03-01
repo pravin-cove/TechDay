@@ -224,8 +224,10 @@ function discoverTitanWEServices(titanWeWatch) {
 function turnONLights() {
     console.log('Turning lights ON...');
     setTimeout(() => {
-        switch1.writeSync(1);
-        switch2.writeSync(1);
+        if (isTitanWeFound) {
+            switch1.writeSync(1);
+            switch2.writeSync(1);
+        }
     }, TIME_DELAY_TO_TURN_LIGHTS_ON);
 }
 
