@@ -15,7 +15,7 @@ var prevDistance = 1000;
 var ECHO_PIN = 24;
 var TRIGGER_PIN = 23;
 var TIMEOUT = 750;
-var DELAY = 10;
+var DELAY = 20;
 var MEASUREMENT_PER_SAMPLE = 5;
 var DIFFERENCE_IN_DISTANCE= 50;
 // RSSI update interval
