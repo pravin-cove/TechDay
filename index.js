@@ -187,7 +187,7 @@ function connectToTitanWeWatch(titanWeWatch) {
     });
 }
 
-noble.on('startScan', () => {
+noble.on('scanStart', () => {
     console.log('Scanning for devices...');
 });
 
