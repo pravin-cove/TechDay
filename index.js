@@ -1,3 +1,24 @@
+
+/**
+ * WATCH CONTROLS
+ * 
+ * Titan WE watch (Both Watches)
+ * Single Press -> TURN ON/OFF both lights
+ * Double Press -> Start changing theme for every 20 seconds untill the next double press.
+ * Long Press -> Increase brightness in steps (Brightness levels : 25, 125 254)
+ * 
+ * Titan WE Black watch
+ * OnConnection - Turn ON both the lights
+ * onDisconnection - Turn OFF both the lights
+ *  
+ */
+
+/**
+ * ULTRASONIC SENSOR 
+ * 
+ * Detect intreupt and change theme.
+ */
+
 /**
  * Imports for the project
  */
@@ -43,7 +64,10 @@ var hueBridgeClient;
 var scenes = ['ALSAIYkjGcoTqZT', 'zz9M5RxxqRL8Cc2', '0kWGStrvP36KHY6', 'K-AyEndxZK6Kaa3', 'WozW-BVdWQf6k9Z', '8DuWm-MRNH7HIuk', '1-c4mo69pPP0KuD', 'c-erWk-Q5i5DdnD', 'PzFrXlOGzTz8pLs', '7MJTcWq40n1IIJW', '76mpkohdYNKlfcq'];
 var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset', 'Arctic aurora', 'Energize', 'Relax', 'Dimmed', 'Bright', 'Concentrate', 'Nightlight'];
 var sceneIndex = 0;
-
+//Helpers variables
+var isLightsON = false;
+var THEME_CHANGE_INERVAL = 20000;
+var changeTheme;
 
 /**
  * Initialise Ultrasonic sensor for wave detection
@@ -109,23 +133,25 @@ noble.on('stateChange', function (state) {
  * and stop scanning once all required devices are found.
  */
 noble.on('discover', (peripheral) => {
-    console.log(`${peripheral.advertisement.localName} discovered.`)
-    if (peripheral.id == titanWE1MacAddress) {
+    // console.log(`${peripheral.advertisement.localName} discovered.`)
+    if (peripheral.id == titanWE1MacAddress && !isTitanWe1Found) {
         console.log('Titan WE watch 1 discovered.');
         isTitanWe1Found = true;
         titanWE1 = peripheral;
         connectToTitanWeWatch(titanWE1);
-    } else if (peripheral.id == titanWE2MacAddress) {
+    } else if (peripheral.id == titanWE2MacAddress && !isTitanWe2Found) {
         console.log('Titan WE watch 2 discovered.');
         isTitanWe2Found = true;
         titanWE2 = peripheral;
         connectToTitanWeWatch(titanWE2);
     }
+
     if (isTitanWe1Found && isTitanWe2Found) {
         noble.stopScanning();
     }
 });
 
+/*
 function subscribeToRssiUpdate(peripheral) {
     console.log('Subscribed to RSSI updates.')
     if (peripheral === titanWE1) {
@@ -154,6 +180,7 @@ function subscribeToRssiUpdate(peripheral) {
         }, 1000)
     }
 }
+*/
 
 /**
  * Start searching for Philips Hue Bridge and if discovered create a client.
@@ -196,7 +223,7 @@ huejay.discover()
  */
 function connectToTitanWeWatch(titanWeWatch) {
     titanWeWatch.on('disconnect', () => {
-        if(titanWeWatch === titanWE1) {
+        if (titanWeWatch === titanWE1) {
             console.log('       Titan WE watch 1 disconnected.');
             if (titanWE1RssiUpdates) {
                 console.log('Unsubscribed to RSSI updates.')
@@ -216,7 +243,7 @@ function connectToTitanWeWatch(titanWeWatch) {
             isTitanWe2Found = false;
         }
 
-        if(!isTitanWe1Found && !isTitanWe2Found) {
+        if (!isTitanWe1Found && !isTitanWe2Found) {
             turnOFFLights();
         }
 
@@ -227,9 +254,9 @@ function connectToTitanWeWatch(titanWeWatch) {
             throw error;
             return
         }
-        if(titanWeWatch === titanWE1) {
+        if (titanWeWatch === titanWE1) {
             console.log('Connected to Titan We watch 1.');
-        } else  if(titanWeWatch === titanWE2) {
+        } else if (titanWeWatch === titanWE2) {
             console.log('Connected to Titan We watch 2.');
         }
         discoverTitanWEServices(titanWeWatch);
@@ -260,93 +287,94 @@ function discoverTitanWEServices(titanWeWatch) {
             console.log('Scanning for characteristics...');
             services[0].discoverCharacteristics(titanWECharacterstic, (error, characteristics) => {
                 // subscribeToRssiUpdate(titanWeWatch);
-                if(titanWeWatch === titanWE1) {
-                characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch1(data, isNotification));
-                console.log('Characteristics found for Titan WE watch 1.');
-                console.log('Titan WE watch 1 is connected and ready to be used.');
-                } else if(titanWeWatch === titanWE2) {
-                    characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch2(data, isNotification));
+                if (titanWeWatch === titanWE1) {
+                    characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
+                    console.log('Characteristics found for Titan WE watch 1.');
+                    console.log('Titan WE watch 1 is connected and ready to be used.');
+                } else if (titanWeWatch === titanWE2) {
+                    characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
                     console.log('Characteristics found for Titan WE watch 2.');
-                console.log('Titan WE watch 2 is connected and ready to be used.');
+                    console.log('Titan WE watch 2 is connected and ready to be used.');
+                    if (!isLightsON) {
+                        turnONLightsWithDelay();
+                    }
                 }
-                turnONLights();
             });
         }
     });
 }
 
-function turnONLights() {
+function turnONLightsWithDelay() {
     setTimeout(() => {
         console.log(`isTitanWE1Found: ${isTitanWe1Found} isTitanWE2Found: ${isTitanWe2Found}`);
         if (isTitanWe1Found && isTitanWe2Found) {
             console.log('Turning lights ON...');
+            isLightsON = true;
             switch1.writeSync(1);
             switch2.writeSync(1);
         }
     }, TIME_DELAY_TO_TURN_LIGHTS_ON);
 }
 
+function turnONLights() {
+    isLightsON = true;
+    switch1.writeSync(1);
+    switch2.writeSync(1);
+}
+
 function turnOFFLights() {
     console.log('Turning lights OFF...');
+    isLightsON = false;
     switch1.writeSync(0);
     switch2.writeSync(0);
 }
 
-function buttonClickedOnTitanWEWatch1(data, isNotification) {
+function handleButtonClick(data, isNotification) {
     console.log(`Button pressed ${data} on WE watch 1.`);
     switch (data.toString()) {
         case 'S1':
-            var switch1State = switch1.readSync();
-            switch1.writeSync(switch1State ^ 1);
+            if (isLightsON) {
+                turnONLights();
+            } else {
+                turnOFFLights();
+            }
             break;
         case 'S2':
             changeScene();
-            // findScenes();
             break;
         case 'S3':
-            console.log('S3 clicked');
-            var switch2State = switch2.readSync();
-            switch2.writeSync(switch2State ^ 1);
+            toggleBrightness();
             break;
     }
 }
 
-function buttonClickedOnTitanWEWatch2(data, isNotification) {
-    console.log(`Button pressed ${data} on WE watch 2.`);
-    switch (data.toString()) {
-        case 'S1':
-            var switch1State = switch1.readSync();
-            switch1.writeSync(switch1State ^ 1);
-            break;
-        case 'S2':
-            changeScene();
-            // findScenes();
-            break;
-        case 'S3':
-            console.log('S3 clicked');
-            var switch2State = switch2.readSync();
-            switch2.writeSync(switch2State ^ 1);
-            break;
-    }
+function toggleBrightness() {
+    console.log('Toggle brightness clicked.')
 }
 
 function changeScene() {
-    if (hueBridgeClient) {
-        console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
-        hueBridgeClient.groups.getById(1)
-            .then(group => {
-                group.scene = scenes[sceneIndex];
-                return hueBridgeClient.groups.save(group);
-            })
-            .then(group => {
-                sceneIndex++;
-                if (sceneIndex === 11) {
-                    sceneIndex = 0;
-                }
-            })
-            .catch(error => {
-                console.log(error.stack);
-            });
+    if (hueBridgeClient && !changeTheme) {
+        changeTheme = setInterval(() => {
+            console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
+            hueBridgeClient.groups.getById(1)
+                .then(group => {
+                    group.scene = scenes[sceneIndex];
+                    return hueBridgeClient.groups.save(group);
+                })
+                .then(group => {
+                    sceneIndex++;
+                    if (sceneIndex === 11) {
+                        sceneIndex = 0;
+                    }
+                })
+                .catch(error => {
+                    console.log(error.stack);
+                });
+        }, THEME_CHANGE_INERVALT)
+    } else {
+        if (changeTheme) {
+            delete changeTheme;
+        }
     }
 }
 
