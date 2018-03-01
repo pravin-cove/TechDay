@@ -66,7 +66,7 @@ var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset
 var sceneIndex = 0;
 //Helpers variables
 var isLightsON = false;
-var THEME_CHANGE_INERVAL = 10000;
+var THEME_CHANGE_INERVAL = 5000;
 var changeTheme;
 var lightBrightness;
 
@@ -363,7 +363,7 @@ function toggleBrightness() {
                 }
                 hueBridgeClient.groups.getById(1)
                     .then(group => {
-                        group.brightness = 254;
+                        group.brightness = brightness;
                         return hueBridgeClient.groups.save(group);
                     })
                     .then(group => {
