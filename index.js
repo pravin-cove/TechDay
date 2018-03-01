@@ -290,6 +290,9 @@ function discoverTitanWEServices(titanWeWatch) {
                     characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
                     console.log('Characteristics found for Titan WE watch 1.');
                     console.log('Titan WE watch 1 is connected and ready to be used.');
+                    if(!isTitanWe2Found) {
+                        noble.startScanning();
+                    }
                 } else if (titanWeWatch === titanWE2) {
                     characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
                     console.log('Characteristics found for Titan WE watch 2.');
