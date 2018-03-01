@@ -348,7 +348,7 @@ function handleButtonClick(data, isNotification) {
 }
 
 function toggleBrightness() {
-    client.groups.getAll()
+    hueBridgeClient.groups.getAll()
   .then(groups => {
     for (let group of groups) {
       console.log(`Group [${group.id}]: ${group.name}`);
