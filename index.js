@@ -17,7 +17,7 @@ var TRIGGER_PIN = 23;
 var TIMEOUT = 750;
 var DELAY = 20;
 var MEASUREMENT_PER_SAMPLE = 5;
-var DIFFERENCE_IN_DISTANCE= 50;
+var DIFFERENCE_IN_DISTANCE = 50;
 // RSSI update interval
 var RSSI_UPDATE_INTERVAL = 2000;
 var rssiUpdates;
@@ -26,6 +26,11 @@ var isTitanWeFound = false;
 var titanWEMacAddress = '80eacd000c4f'
 var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
 var titanWECharacterstic = '000034e200001000800000805f9b34fb';
+//Titan RAGA watch
+var isRagaFound = false;
+var RagaMacAddress = 'd2842a5ba5b8'
+var RagaServiceUUID = '000056ef00001000800000805f9b34fb';
+var RagaCharacterstic = '000034e200001000800000805f9b34fb';
 //Define switch GPIO ports
 var switch1 = new Gpio(17, 'out');
 var switch2 = new Gpio(22, 'out');
@@ -34,30 +39,37 @@ var hueBridgeClient;
 var scenes = ['ALSAIYkjGcoTqZT', 'zz9M5RxxqRL8Cc2', '0kWGStrvP36KHY6', 'K-AyEndxZK6Kaa3', 'WozW-BVdWQf6k9Z', '8DuWm-MRNH7HIuk', '1-c4mo69pPP0KuD', 'c-erWk-Q5i5DdnD', 'PzFrXlOGzTz8pLs', '7MJTcWq40n1IIJW', '76mpkohdYNKlfcq'];
 var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset', 'Arctic aurora', 'Energize', 'Relax', 'Dimmed', 'Bright', 'Concentrate', 'Nightlight'];
 var sceneIndex = 0;
+
+
 /**
  * Initialise Ultrasonic sensor for wave detection
  */
-usonic.init((error) => {
-    if (error) {
-        console.log(error);
-    } else {
-        var sensor = usonic.createSensor(ECHO_PIN, TRIGGER_PIN, TIMEOUT);
-        var distances;
-        (function measure() {
-            if (!distances || distances.length === MEASUREMENT_PER_SAMPLE) {
-                if (distances) {
-                    waveDetect(distances);
+function initialiseUltrasonic() {
+    usonic.init((error) => {
+        if (error) {
+            console.log(error);
+        } else {
+            var sensor = usonic.createSensor(ECHO_PIN, TRIGGER_PIN, TIMEOUT);
+            var distances;
+            (function measure() {
+                if (!distances || distances.length === MEASUREMENT_PER_SAMPLE) {
+                    if (distances) {
+                        waveDetect(distances);
+                    }
+                    distances = [];
                 }
-                distances = [];
-            }
-            setTimeout(function () {
-                distances.push(sensor());
-                measure();
-            }, DELAY);
-        }());
-    }
-});
+                setTimeout(function () {
+                    distances.push(sensor());
+                    measure();
+                }, DELAY);
+            }());
+        }
+    });
+}
 
+/**
+ * To detect if the hands are waved.
+ */
 function waveDetect(distances) {
     var distance = statistics.median(distances);
 
@@ -66,7 +78,7 @@ function waveDetect(distances) {
 
     if (distance < 0) {
         // process.stdout.write('Error: Measurement timeout.\n');
-         console.log('Error in measurement.');
+        console.log('Error in measurement.');
     } else {
         process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < DIFFERENCE_IN_DISTANCE && prevDistance > DIFFERENCE_IN_DISTANCE) {
@@ -75,13 +87,13 @@ function waveDetect(distances) {
         prevDistance = distance;
     }
 }
+
 /**
  * Listen to the state change and start scanning for BLE devices
  * when the Bluetooth adapter turns ON.
  */
 noble.on('stateChange', function (state) {
     if (state === 'poweredOn') {
-        console.log('Scanning for devices...');
         noble.startScanning();
     } else {
         noble.stopScanning();
@@ -93,6 +105,7 @@ noble.on('stateChange', function (state) {
  * and stop scanning once all required devices are found.
  */
 noble.on('discover', (peripheral) => {
+    console.log(`periperal discovered -> ${}`)
     if (peripheral.id == titanWEMacAddress) {
         console.log('Titan WE watch discovered.');
         isTitanWeFound = true;
@@ -111,7 +124,7 @@ function subscribeToRssiUpdate(peripheral) {
                 throw error;
                 return;
             }
-            if (rssi < 0) console.log("here is my RSSI: " + rssi);
+            if (rssi < 0) console.log("Titan WE RSSI: " + rssi);
         })
     }, 1000)
 }
@@ -158,7 +171,6 @@ huejay.discover()
 function connectToTitanWeWatch(titanWeWatch) {
     titanWeWatch.on('disconnect', () => {
         console.log('Titan WE watch disconnected.');
-        console.log('Scanning for devices...');
         if (rssiUpdates) {
             console.log('Unsubscribed to RSSI updates.')
             clearInterval(rssiUpdates);
@@ -175,6 +187,11 @@ function connectToTitanWeWatch(titanWeWatch) {
         discoverTitanWEServices(titanWeWatch);
     });
 }
+
+noble.on('startScan', () => {
+    console.log('Scanning for devices...');
+});
+
 /**
  * See if we can discover required service & chacterstic, and ssubscribe to it.
  * @param {peripheral} titanWeWatch 
@@ -194,6 +211,7 @@ function discoverTitanWEServices(titanWeWatch) {
                 console.log('Titan WE watch connected and ready to be used.');
                 subscribeToRssiUpdate(titanWeWatch);
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
+                initialiseUltrasonic();
             });
         }
     });
