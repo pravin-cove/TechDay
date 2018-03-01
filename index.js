@@ -149,7 +149,7 @@ noble.on('discover', (peripheral) => {
 
     if (isTitanWe1Found && isTitanWe2Found) {
         console.log('Stopping BLE scan...')
-        // noble.stopScanning();
+        noble.stopScanning();
     }
 });
 
@@ -290,9 +290,6 @@ function discoverTitanWEServices(titanWeWatch) {
                     characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
                     console.log('Characteristics found for Titan WE watch 1.');
                     console.log('Titan WE watch 1 is connected and ready to be used.');
-                    if(!isTitanWe2Found) {
-                        noble.startScanning();
-                    }
                 } else if (titanWeWatch === titanWE2) {
                     characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
                     console.log('Characteristics found for Titan WE watch 2.');
@@ -300,6 +297,9 @@ function discoverTitanWEServices(titanWeWatch) {
                     if (!isLightsON) {
                         turnONLightsWithDelay();
                     }
+                }
+                if(!isTitanWe2Found || !isTitanWe1Found) {
+                    noble.startScanning();
                 }
             });
         }
