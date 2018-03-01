@@ -31,6 +31,8 @@ var isRagaFound = false;
 var RagaMacAddress = 'd2842a5ba5b8'
 var RagaServiceUUID = '000056ef00001000800000805f9b34fb';
 var RagaCharacterstic = '000034e200001000800000805f9b34fb';
+//TIME DELAY TO TURN LIGHTS ON
+var TIME_DELAY_TO_TURN_LIGHTS_ON = 10000;
 //Define switch GPIO ports
 var switch1 = new Gpio(17, 'out');
 var switch2 = new Gpio(22, 'out');
@@ -177,6 +179,8 @@ function connectToTitanWeWatch(titanWeWatch) {
             clearInterval(rssiUpdates);
             delete rssiUpdates;
         }
+        isTitanWeFound = false;
+        turnOFFLights();
         noble.startScanning();
     });
     titanWeWatch.connect((error) => {
@@ -220,11 +224,15 @@ function discoverTitanWEServices(titanWeWatch) {
 }
 
 function turnONLights() {
-    switch1.writeSync(1);
-    switch2.writeSync(1);
+    console.log('Turning lights ON...');
+    setTimeout(() => {
+        switch1.writeSync(1);
+        switch2.writeSync(1);
+    }, TIME_DELAY_TO_TURN_LIGHTS_ON);
 }
 
 function turnOFFLights() {
+    console.log('Turning lights OFF...');
     switch1.writeSync(0);
     switch2.writeSync(0);
 }
