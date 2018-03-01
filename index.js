@@ -337,7 +337,7 @@ function handleButtonClick(data, isNotification) {
             }
             break;
         case 'S2':
-            changeScene();
+            changeSceneContinuously();
             break;
         case 'S3':
             toggleBrightness();
@@ -349,7 +349,7 @@ function toggleBrightness() {
     console.log('Toggle brightness clicked.')
 }
 
-function changeScene() {
+function changeSceneContinuously() {
     if (hueBridgeClient && !changeTheme) {
         changeTheme = setInterval(() => {
             console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
@@ -367,7 +367,31 @@ function changeScene() {
                 .catch(error => {
                     console.log(error.stack);
                 });
-        }, THEME_CHANGE_INERVALT)
+        }, THEME_CHANGE_INERVAL)
+    } else {
+        if (changeTheme) {
+            delete changeTheme;
+        }
+    }
+}
+
+function changeScene() {
+    if (hueBridgeClient) {
+        console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
+        hueBridgeClient.groups.getById(1)
+            .then(group => {
+                group.scene = scenes[sceneIndex];
+                return hueBridgeClient.groups.save(group);
+            })
+            .then(group => {
+                sceneIndex++;
+                if (sceneIndex === 11) {
+                    sceneIndex = 0;
+                }
+            })
+            .catch(error => {
+                console.log(error.stack);
+            });
     } else {
         if (changeTheme) {
             delete changeTheme;
