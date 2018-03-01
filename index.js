@@ -149,7 +149,7 @@ noble.on('discover', (peripheral) => {
 
     if (isTitanWe1Found && isTitanWe2Found) {
         console('Stopping BLE scan...')
-        noble.stopScanning();
+        // noble.stopScanning();
     }
 });
 
