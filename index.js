@@ -76,14 +76,14 @@ usonic.init((error) => {
 function waveDetect(distances) {
     var distance = statistics.median(distances);
 
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
+    // process.stdout.clearLine();
+    // process.stdout.cursorTo(0);
 
     if (distance < 0) {
         // process.stdout.write('Error: Measurement timeout.\n');
         console.log('Error in measurement.');
     } else {
-        process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+        // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < DIFFERENCE_IN_DISTANCE && prevDistance > DIFFERENCE_IN_DISTANCE) {
             changeScene();
         }
@@ -255,13 +255,15 @@ function discoverTitanWEServices(titanWeWatch) {
             console.log('Services found for Titan WE watch.');
             console.log('Scanning for characteristics...');
             services[0].discoverCharacteristics(titanWECharacterstic, (error, characteristics) => {
-                console.log('Characteristics found for Titan WE watch.');
-                console.log('Titan WE watch connected and ready to be used.');
                 // subscribeToRssiUpdate(titanWeWatch);
                 if(titanWeWatch === titanWE1) {
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch1(data, isNotification));
+                console.log('Characteristics found for Titan WE watch 1.');
+                console.log('Titan WE watch 1 is connected and ready to be used.');
                 } else if(titanWeWatch === titanWE2) {
                     characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch2(data, isNotification));
+                    console.log('Characteristics found for Titan WE watch 2.');
+                console.log('Titan WE watch 2 is connected and ready to be used.');
                 }
                 turnONLights();
             });
@@ -272,7 +274,7 @@ function discoverTitanWEServices(titanWeWatch) {
 function turnONLights() {
     console.log('Turning lights ON...');
     setTimeout(() => {
-        if (isTitanWeFound) {
+        if (isTitanWe1Found && isTitanWe2Found) {
             switch1.writeSync(1);
             switch2.writeSync(1);
         }
@@ -305,7 +307,7 @@ function buttonClickedOnTitanWEWatch1(data, isNotification) {
 }
 
 function buttonClickedOnTitanWEWatch2(data, isNotification) {
-    console.log(`Button pressed ${data} on WE watch 1.`);
+    console.log(`Button pressed ${data} on WE watch 2.`);
     switch (data.toString()) {
         case 'S1':
             var switch1State = switch1.readSync();
