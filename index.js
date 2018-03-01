@@ -68,6 +68,7 @@ var sceneIndex = 0;
 var isLightsON = false;
 var THEME_CHANGE_INERVAL = 5000;
 var changeTheme;
+var isInChangeThemeMode = false;
 var lightBrightness;
 
 /**
@@ -382,8 +383,9 @@ function toggleBrightness() {
 }
 
 function changeSceneContinuously() {
-    if (hueBridgeClient && !changeTheme) {
+    if (hueBridgeClient && !isInChangeThemeMode) {
         console.log('Theme sequence started..')
+        isInChangeThemeMode = true;
         changeScene();
         changeTheme = setInterval(() => {
             console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
@@ -404,6 +406,7 @@ function changeSceneContinuously() {
         }, THEME_CHANGE_INERVAL)
     } else {
         if (changeTheme) {
+            isInChangeThemeMode = false;
             console.log('Theme sequence ended..')
             clearInterval(changeTheme);
             delete changeTheme;
