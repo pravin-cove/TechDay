@@ -46,28 +46,27 @@ var sceneIndex = 0;
 /**
  * Initialise Ultrasonic sensor for wave detection
  */
-function initialiseUltrasonic() {
-    usonic.init((error) => {
-        if (error) {
-            console.log(error);
-        } else {
-            var sensor = usonic.createSensor(ECHO_PIN, TRIGGER_PIN, TIMEOUT);
-            var distances;
-            (function measure() {
-                if (!distances || distances.length === MEASUREMENT_PER_SAMPLE) {
-                    if (distances) {
-                        waveDetect(distances);
-                    }
-                    distances = [];
+usonic.init((error) => {
+    if (error) {
+        console.log(error);
+    } else {
+        var sensor = usonic.createSensor(ECHO_PIN, TRIGGER_PIN, TIMEOUT);
+        var distances;
+        (function measure() {
+            if (!distances || distances.length === MEASUREMENT_PER_SAMPLE) {
+                if (distances) {
+                    waveDetect(distances);
                 }
-                setTimeout(function () {
-                    distances.push(sensor());
-                    measure();
-                }, DELAY);
-            }());
-        }
-    });
-}
+                distances = [];
+            }
+            setTimeout(function () {
+                distances.push(sensor());
+                measure();
+            }, DELAY);
+        }());
+    }
+});
+
 
 /**
  * To detect if the hands are waved.
@@ -216,7 +215,6 @@ function discoverTitanWEServices(titanWeWatch) {
                 console.log('Titan WE watch connected and ready to be used.');
                 // subscribeToRssiUpdate(titanWeWatch);
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
-                initialiseUltrasonic();
                 turnONLights();
             });
         }
