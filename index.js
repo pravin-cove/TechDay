@@ -93,6 +93,7 @@ function waveDetect(distances) {
  * when the Bluetooth adapter turns ON.
  */
 noble.on('stateChange', function (state) {
+    console.log(`State changed => ${state}`);
     if (state === 'poweredOn') {
         noble.startScanning();
     } else {
@@ -105,6 +106,7 @@ noble.on('stateChange', function (state) {
  * and stop scanning once all required devices are found.
  */
 noble.on('discover', (peripheral) => {
+    console.log(`${peripheral.advertisement.localName} discovered.`)
     if (peripheral.id == titanWEMacAddress) {
         console.log('Titan WE watch discovered.');
         isTitanWeFound = true;
@@ -208,12 +210,23 @@ function discoverTitanWEServices(titanWeWatch) {
             services[0].discoverCharacteristics(titanWECharacterstic, (error, characteristics) => {
                 console.log('Characteristics found for Titan WE watch.');
                 console.log('Titan WE watch connected and ready to be used.');
-                subscribeToRssiUpdate(titanWeWatch);
+                // subscribeToRssiUpdate(titanWeWatch);
                 characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
                 initialiseUltrasonic();
+                turnONLights();
             });
         }
     });
+}
+
+function turnONLights() {
+    switch1.writeSync(1);
+    switch2.writeSync(1);
+}
+
+function turnOFFLights() {
+    switch1.writeSync(0);
+    switch2.writeSync(0);
 }
 
 function buttonClickedOnTitanWEWatch(data, isNotification) {
