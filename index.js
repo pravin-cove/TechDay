@@ -377,7 +377,7 @@ function toggleBrightness() {
 }
 
 function changeSceneContinuously() {
-    if (hueBridgeClient && !changeTheme) {
+    if (hueBridgeClient) {
         changeScene();
         changeTheme = setInterval(() => {
             console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
