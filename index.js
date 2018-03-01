@@ -377,7 +377,8 @@ function toggleBrightness() {
 }
 
 function changeSceneContinuously() {
-    if (hueBridgeClient) {
+    if (hueBridgeClient && !changeTheme) {
+        console.log('Theme sequence started..')
         changeScene();
         changeTheme = setInterval(() => {
             console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
@@ -398,6 +399,7 @@ function changeSceneContinuously() {
         }, THEME_CHANGE_INERVAL)
     } else {
         if (changeTheme) {
+            console.log('Theme sequence ended..')
             clearInterval(changeTheme);
             delete changeTheme;
         }
