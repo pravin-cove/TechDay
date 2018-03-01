@@ -338,7 +338,6 @@ function handleButtonClick(data, isNotification) {
             }
             break;
         case 'S2':
-            changeScene();
             changeSceneContinuously();
             break;
         case 'S3':
@@ -365,7 +364,7 @@ function toggleBrightness() {
                 hueBridgeClient.groups.getById(1)
                     .then(group => {
                         group.brightness = 254;
-                        return client.groups.save(group);
+                        return hueBridgeClient.groups.save(group);
                     })
                     .then(group => {
                         console.log(`Group [${group.id}] was saved`);
@@ -379,6 +378,7 @@ function toggleBrightness() {
 
 function changeSceneContinuously() {
     if (hueBridgeClient && !changeTheme) {
+        changeScene();
         changeTheme = setInterval(() => {
             console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
             hueBridgeClient.groups.getById(1)
