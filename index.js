@@ -135,12 +135,12 @@ noble.on('stateChange', function (state) {
  */
 noble.on('discover', (peripheral) => {
     // console.log(`${peripheral.advertisement.localName} discovered.`)
-    if (peripheral.id == titanWE1MacAddress && !isTitanWe1Found) {
+    if (peripheral.id == titanWE1MacAddress) {
         console.log('Titan WE watch 1 discovered.');
         isTitanWe1Found = true;
         titanWE1 = peripheral;
         connectToTitanWeWatch(titanWE1);
-    } else if (peripheral.id == titanWE2MacAddress && !isTitanWe2Found) {
+    } else if (peripheral.id == titanWE2MacAddress) {
         console.log('Titan WE watch 2 discovered.');
         isTitanWe2Found = true;
         titanWE2 = peripheral;
@@ -303,9 +303,10 @@ function discoverTitanWEServices(titanWeWatch) {
 }
 
 function turnONLightsWithDelay() {
+    console.log('Turning lights ON sequence initiated...');
     setTimeout(() => {
-        console.log(`isTitanWE1Found: ${isTitanWe1Found} isTitanWE2Found: ${isTitanWe2Found}`);
-        if (isTitanWe1Found && isTitanWe2Found) {
+        console.log(`isTitanWE2Found: ${isTitanWe2Found}`);
+        if (isTitanWe2Found) {
             console.log('Turning lights ON...');
             isLightsON = true;
             switch1.writeSync(1);
