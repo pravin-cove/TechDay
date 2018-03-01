@@ -327,16 +327,17 @@ function turnOFFLights() {
 }
 
 function handleButtonClick(data, isNotification) {
-    console.log(`Button pressed ${data} on WE watch 1.`);
+    console.log(`Button pressed ${data} on Titan WE watch.`);
     switch (data.toString()) {
         case 'S1':
-            if (isLightsON) {
+            if (!isLightsON) {
                 turnONLights();
             } else {
                 turnOFFLights();
             }
             break;
         case 'S2':
+            changeScene();
             changeSceneContinuously();
             break;
         case 'S3':
@@ -370,6 +371,7 @@ function changeSceneContinuously() {
         }, THEME_CHANGE_INERVAL)
     } else {
         if (changeTheme) {
+            clearInterval(changeTheme);
             delete changeTheme;
         }
     }
