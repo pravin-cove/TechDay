@@ -20,17 +20,19 @@ var MEASUREMENT_PER_SAMPLE = 5;
 var DIFFERENCE_IN_DISTANCE = 50;
 // RSSI update interval
 var RSSI_UPDATE_INTERVAL = 2000;
-var rssiUpdates;
+var titanWE1RssiUpdates;
+var titanWE2RssiUpdates;
 //Titan WE watch - 1
-var isTitanWeFound = false;
-var titanWEMacAddress = '80eacd000c4f'
+var titanWE1;
+var isTitanWe1Found = false;
+var titanWE1MacAddress = '80eacd000c4f'
+//Titan WE watch - 2
+var titanWE2;
+var isTitanWe2Found = false;
+var titanWE2MacAddress = '80eacd00031a'
+//Services and Characterstics
 var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
 var titanWECharacterstic = '000034e200001000800000805f9b34fb';
-//Titan RAGA watch
-var isRagaFound = false;
-var RagaMacAddress = 'd2842a5ba5b8'
-var RagaServiceUUID = '000056ef00001000800000805f9b34fb';
-var RagaCharacterstic = '000034e200001000800000805f9b34fb';
 //TIME DELAY TO TURN LIGHTS ON
 var TIME_DELAY_TO_TURN_LIGHTS_ON = 10000;
 //Define switch GPIO ports
@@ -108,27 +110,49 @@ noble.on('stateChange', function (state) {
  */
 noble.on('discover', (peripheral) => {
     console.log(`${peripheral.advertisement.localName} discovered.`)
-    if (peripheral.id == titanWEMacAddress) {
-        console.log('Titan WE watch discovered.');
-        isTitanWeFound = true;
-        connectToTitanWeWatch(peripheral);
+    if (peripheral.id == titanWE1MacAddress) {
+        console.log('Titan WE watch 1 discovered.');
+        isTitanWe1Found = true;
+        titanWE1 = peripheral;
+        connectToTitanWeWatch(titanWE1);
+    } else if (peripheral.id == titanWE2MacAddress) {
+        console.log('Titan WE watch 2 discovered.');
+        isTitanWe2Found = true;
+        titanWE2 = peripheral;
+        connectToTitanWeWatch(titanWE2);
     }
-    if (isTitanWeFound) {
+    if (isTitanWe1Found && isTitanWe2Found) {
         noble.stopScanning();
     }
 });
 
 function subscribeToRssiUpdate(peripheral) {
     console.log('Subscribed to RSSI updates.')
-    rssiUpdates = setInterval(() => {
-        peripheral.updateRssi((error, rssi) => {
-            if (error) {
-                throw error;
-                return;
-            }
-            if (rssi < 0) console.log("Titan WE RSSI: " + rssi);
-        })
-    }, 1000)
+    if (peripheral === titanWE1) {
+        titanWE1RssiUpdates = setInterval(() => {
+            peripheral.updateRssi((error, rssi) => {
+                if (error) {
+                    throw error;
+                    return;
+                }
+                if (rssi < 0) {
+                    console.log('Titan WE watch 1 -> ' + rssi)
+                }
+            })
+        }, 1000)
+    } else if (peripheral === titanWE2) {
+        titanWE2RssiUpdates = setInterval(() => {
+            peripheral.updateRssi((error, rssi) => {
+                if (error) {
+                    throw error;
+                    return;
+                }
+                if (rssi < 0) {
+                    console.log('Titan WE watch 1 -> ' + rssi)
+                }
+            })
+        }, 1000)
+    }
 }
 
 /**
@@ -172,14 +196,30 @@ huejay.discover()
  */
 function connectToTitanWeWatch(titanWeWatch) {
     titanWeWatch.on('disconnect', () => {
-        console.log('Titan WE watch disconnected.');
-        if (rssiUpdates) {
-            console.log('Unsubscribed to RSSI updates.')
-            clearInterval(rssiUpdates);
-            delete rssiUpdates;
+        if(titanWeWatch === titanWE1) {
+            console.log('Titan WE watch 1 disconnected.');
+            if (titanWE1RssiUpdates) {
+                console.log('Unsubscribed to RSSI updates.')
+                clearInterval(titanWE1RssiUpdates);
+                delete titanWE1RssiUpdates;
+            }
+            delete titanWE1;
+            isTitanWe1Found = false;
+        } else if (titanWeWatch === titanWE2) {
+            console.log('Titan WE watch 2 disconnected.');
+            if (titanWE2RssiUpdates) {
+                console.log('Unsubscribed to RSSI updates.')
+                clearInterval(titanWE2RssiUpdates);
+                delete titanWE2RssiUpdates;
+            }
+            delete titanWE2;
+            isTitanWe2Found = false;
         }
-        isTitanWeFound = false;
-        turnOFFLights();
+
+        if(!isTitanWe1Found && !isTitanWe2Found) {
+            turnOFFLights();
+        }
+
         noble.startScanning();
     });
     titanWeWatch.connect((error) => {
@@ -187,7 +227,11 @@ function connectToTitanWeWatch(titanWeWatch) {
             throw error;
             return
         }
-        console.log('Connected to Titan We watch.');
+        if(titanWeWatch === titanWE1) {
+            console.log('Connected to Titan We watch 1.');
+        } else  if(titanWeWatch === titanWE2) {
+            console.log('Connected to Titan We watch 2.');
+        }
         discoverTitanWEServices(titanWeWatch);
     });
 }
@@ -214,7 +258,11 @@ function discoverTitanWEServices(titanWeWatch) {
                 console.log('Characteristics found for Titan WE watch.');
                 console.log('Titan WE watch connected and ready to be used.');
                 // subscribeToRssiUpdate(titanWeWatch);
-                characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch(data, isNotification));
+                if(titanWeWatch === titanWE1) {
+                characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch1(data, isNotification));
+                } else if(titanWeWatch === titanWE2) {
+                    characteristics[0].on('data', (data, isNotification) => buttonClickedOnTitanWEWatch2(data, isNotification));
+                }
                 turnONLights();
             });
         }
@@ -237,8 +285,27 @@ function turnOFFLights() {
     switch2.writeSync(0);
 }
 
-function buttonClickedOnTitanWEWatch(data, isNotification) {
-    console.log(`Button pressed ${data}`);
+function buttonClickedOnTitanWEWatch1(data, isNotification) {
+    console.log(`Button pressed ${data} on WE watch 1.`);
+    switch (data.toString()) {
+        case 'S1':
+            var switch1State = switch1.readSync();
+            switch1.writeSync(switch1State ^ 1);
+            break;
+        case 'S2':
+            changeScene();
+            // findScenes();
+            break;
+        case 'S3':
+            console.log('S3 clicked');
+            var switch2State = switch2.readSync();
+            switch2.writeSync(switch2State ^ 1);
+            break;
+    }
+}
+
+function buttonClickedOnTitanWEWatch2(data, isNotification) {
+    console.log(`Button pressed ${data} on WE watch 1.`);
     switch (data.toString()) {
         case 'S1':
             var switch1State = switch1.readSync();
