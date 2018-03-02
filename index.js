@@ -46,11 +46,11 @@ var titanWE2RssiUpdates;
 //Titan WE watch - 1
 var titanWE1;
 var isTitanWe1Found = false;
-var titanWE1MacAddress = '80eacd000c4f'
+var titanWE1MacAddress = '80eacd00031a' //80eacd000c4f
 //Titan WE watch - 2
 var titanWE2;
 var isTitanWe2Found = false;
-var titanWE2MacAddress = '80eacd00031a'
+var titanWE2MacAddress = '80eacd000c4f' //80eacd00031a
 //Services and Characterstics
 var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
 var titanWECharacterstic = '000034e200001000800000805f9b34fb';
