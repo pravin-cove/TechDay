@@ -132,7 +132,7 @@ function waveDetect(distances) {
 
     if (distance < 0) {
         // process.stdout.write('Error: Measurement timeout.\n');
-        console.log('Error in measurement.');
+        // console.log('Error in measurement.');
     } else {
         // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < DIFFERENCE_IN_DISTANCE && prevDistance > DIFFERENCE_IN_DISTANCE) {
