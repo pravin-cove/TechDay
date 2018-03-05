@@ -468,6 +468,15 @@ function changeScene() {
     }
 }
 
+function broadcastStateChange() {
+    var result = { 
+        status: 'OK',
+        lights: isLightsON,
+        sequence: isInChangeThemeMode,
+      }
+      io.sockets.emit('message', result);
+}
+
 function findScenes() {
     if (hueBridgeClient) {
         hueBridgeClient.scenes.getAll()
@@ -478,14 +487,5 @@ function findScenes() {
                     console.log();
                 }
             });
-    }
-
-    function broadcastStateChange() {
-        var result = { 
-            status: 'OK',
-            lights: isLightsON,
-            sequence: isInChangeThemeMode,
-          }
-          io.sockets.emit('message', result);
     }
 }
