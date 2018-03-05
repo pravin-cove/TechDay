@@ -341,6 +341,7 @@ function turnONLightsWithDelay() {
             isLightsON = true;
             switch1.writeSync(1);
             switch2.writeSync(1);
+            broadcastStateChange();
         }
     }, TIME_DELAY_TO_TURN_LIGHTS_ON);
 }
@@ -349,6 +350,7 @@ function turnONLights() {
     isLightsON = true;
     switch1.writeSync(1);
     switch2.writeSync(1);
+    broadcastStateChange();
 }
 
 function turnOFFLights() {
@@ -356,6 +358,7 @@ function turnOFFLights() {
     isLightsON = false;
     switch1.writeSync(0);
     switch2.writeSync(0);
+    broadcastStateChange();
 }
 
 function handleButtonClick(data, isNotification) {
@@ -429,12 +432,14 @@ function changeSceneContinuously() {
                     console.log(error.stack);
                 });
         }, THEME_CHANGE_INERVAL)
+        broadcastStateChange();
     } else {
         if (changeTheme) {
             isInChangeThemeMode = false;
             console.log('Theme sequence ended..')
             clearInterval(changeTheme);
             delete changeTheme;
+            broadcastStateChange();
         }
     }
 }
@@ -473,5 +478,14 @@ function findScenes() {
                     console.log();
                 }
             });
+    }
+
+    function broadcastStateChange() {
+        var result = { 
+            status: 'OK',
+            lights: isLightsON,
+            sequence: isInChangeThemeMode,
+          }
+          io.sockets.emit('message', result);
     }
 }
