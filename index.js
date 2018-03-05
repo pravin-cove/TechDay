@@ -28,6 +28,11 @@ var Gpio = require('onoff').Gpio;
 var statistics = require('math-statistics');
 var usonic = require('mmm-usonic');
 
+//FOR Socket connection
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 /**
  * Global variables
  */
@@ -55,7 +60,7 @@ var titanWE2MacAddress = '80eacd000c4f' //80eacd00031a
 var titanWEServiceUUID = '000056ef00001000800000805f9b34fb';
 var titanWECharacterstic = '000034e200001000800000805f9b34fb';
 //TIME DELAY TO TURN LIGHTS ON
-var TIME_DELAY_TO_TURN_LIGHTS_ON = 10000;
+var TIME_DELAY_TO_TURN_LIGHTS_ON = 5000;
 //Define switch GPIO ports
 var switch1 = new Gpio(17, 'out');
 var switch2 = new Gpio(22, 'out');
@@ -70,6 +75,26 @@ var THEME_CHANGE_INERVAL = 5000;
 var changeTheme;
 var isInChangeThemeMode = false;
 var lightBrightness;
+// Port for socket
+var PORT = process.env.PORT || 3000;
+/**
+ * Here we define sockect controls.
+ */
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('disconnect',() => {
+        console.log('user disconnected');
+      });
+      socket.on('message', (msg) => {
+        console.log('message: ' + msg);
+        var obj = {'name': 'Pravin', 'test': true}
+      });
+  });
+
+
+http.listen(8080, () => {
+    console.log('Listening on:' + PORT);
+});
 
 /**
  * Initialise Ultrasonic sensor for wave detection
@@ -299,7 +324,7 @@ function discoverTitanWEServices(titanWeWatch) {
                         turnONLightsWithDelay();
                     }
                 }
-                if(!isTitanWe2Found || !isTitanWe1Found) {
+                if (!isTitanWe2Found || !isTitanWe1Found) {
                     noble.startScanning();
                 }
             });
