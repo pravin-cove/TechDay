@@ -85,9 +85,8 @@ io.on('connection', (socket) => {
     socket.on('disconnect',() => {
         console.log('user disconnected');
       });
-      socket.on('message', (msg) => {
+      socket.on('update', (msg) => {
         console.log('message: ' + msg);
-        var obj = {'name': 'Pravin', 'test': true}
       });
   });
 
