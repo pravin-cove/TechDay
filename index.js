@@ -82,7 +82,7 @@ var PORT = process.env.PORT || 3000;
  */
 io.on('connection', (socket) => {
     console.log('a user connected');
-    
+
     broadcastStateChange();
 
     socket.on('disconnect',() => {
@@ -114,6 +114,10 @@ io.on('connection', (socket) => {
 
         if(status['isChangeBrightness']){
             toggleBrightness();
+        }
+
+        if(staus['isChangeTheme']) {
+            changeScene();
         }
       });
   });
