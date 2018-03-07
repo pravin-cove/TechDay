@@ -86,7 +86,13 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
       });
       socket.on('update', (msg) => {
-        console.log('message: ' + msg);
+        var status = JSON.parse(msg);
+        if(status['lights'] && !isLightsON) {
+            turnONLights();
+        }
+        if(!status['lights'] && isLightsON) {
+            turnOFFLights();
+        }
       });
   });
 
