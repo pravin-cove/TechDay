@@ -87,11 +87,29 @@ io.on('connection', (socket) => {
       });
       socket.on('update', (msg) => {
         var status = JSON.parse(msg);
-        if(status['lights'] && !isLightsON) {
-            turnONLights();
+
+        if(status['lights']) {
+            if(!isLightsON) {
+                turnONLights();
+            }
+        } else {
+            if(isLightsON) {
+                turnOFFLights();
+            }
         }
-        if(!status['lights'] && isLightsON) {
-            turnOFFLights();
+
+        if(status['sequence']) {
+            if(!isInChangeThemeMode) {
+                changeSceneContinuously();
+            }
+        } else {
+            if(isInChangeThemeMode) {
+                changeSceneContinuously();
+            }
+        }
+
+        if(status['isChangeBrightness']){
+            toggleBrightness();
         }
       });
   });
@@ -352,6 +370,7 @@ function turnONLightsWithDelay() {
 }
 
 function turnONLights() {
+    console.log('Turning lights ON...');
     isLightsON = true;
     switch1.writeSync(1);
     switch2.writeSync(1);
