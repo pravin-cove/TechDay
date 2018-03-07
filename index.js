@@ -82,9 +82,13 @@ var PORT = process.env.PORT || 3000;
  */
 io.on('connection', (socket) => {
     console.log('a user connected');
+    
+    broadcastStateChange();
+
     socket.on('disconnect',() => {
         console.log('user disconnected');
       });
+
       socket.on('update', (msg) => {
         var status = JSON.parse(msg);
 
