@@ -116,7 +116,7 @@ io.on('connection', (socket) => {
             toggleBrightness();
         }
 
-        if(staus['isChangeTheme']) {
+        if(status['isChangeTheme']) {
             changeScene();
         }
       });
