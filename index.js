@@ -361,7 +361,7 @@ function discoverTitanWEServices(titanWeWatch) {
                     console.log('Characteristics found for Titan WE watch 1.');
                     console.log('Titan WE watch 1 is connected and ready to be used.');
                 } else if (titanWeWatch === titanWE2) {
-                    characteristics[0].on('data', (data, isNotification) => handleButtonClick(data, isNotification));
+                    characteristics[0].on('data', (data, isNotification) => handleButtonClickOnBrownWatch(data, isNotification));
                     console.log('Characteristics found for Titan WE watch 2.');
                     console.log('Titan WE watch 2 is connected and ready to be used.');
                     if (!isLightsON) {
@@ -430,6 +430,25 @@ function handleButtonClick(data, isNotification) {
                 turnONLights();
             } else {
                 turnOFFLights();
+            }
+            break;
+        case 'S2':
+            changeSceneContinuously();
+            break;
+        case 'S3':
+            toggleBrightness();
+            break;
+    }
+}
+
+function handleButtonClickOnBrownWatch(data, isNotification) {
+    console.log(`Button pressed ${data} on Titan WE watch.`);
+    switch (data.toString()) {
+        case 'S1':
+            if (!isTvON) {
+                turnONTv();
+            } else {
+                tutnOFFTv();
             }
             break;
         case 'S2':
