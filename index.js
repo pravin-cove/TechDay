@@ -64,6 +64,7 @@ var TIME_DELAY_TO_TURN_LIGHTS_ON = 5000;
 //Define switch GPIO ports
 var switch1 = new Gpio(17, 'out');
 var switch2 = new Gpio(22, 'out');
+var switch3 = new Gpio(27, 'out')
 //Define a client for Philips Hue Bridge.
 var hueBridgeClient;
 var scenes = ['ALSAIYkjGcoTqZT', 'zz9M5RxxqRL8Cc2', '0kWGStrvP36KHY6', 'K-AyEndxZK6Kaa3', 'WozW-BVdWQf6k9Z', '8DuWm-MRNH7HIuk', '1-c4mo69pPP0KuD', 'c-erWk-Q5i5DdnD', 'PzFrXlOGzTz8pLs', '7MJTcWq40n1IIJW', '76mpkohdYNKlfcq'];
@@ -71,6 +72,7 @@ var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset
 var sceneIndex = 0;
 //Helpers variables
 var isLightsON = false;
+var isTvON = false
 var THEME_CHANGE_INERVAL = 5000;
 var changeTheme;
 var isInChangeThemeMode = false;
@@ -109,6 +111,16 @@ io.on('connection', (socket) => {
         } else {
             if(isInChangeThemeMode) {
                 changeSceneContinuously();
+            }
+        }
+
+        if(status['tv']){
+            if(!isTvON) {
+                turnONTv();
+            }
+        } else {
+            if(isTvON) {
+                tutnOFFTv();
             }
         }
 
@@ -301,6 +313,7 @@ function connectToTitanWeWatch(titanWeWatch) {
             delete titanWE2;
             isTitanWe2Found = false;
             turnOFFLights();
+            tutnOFFTv();
         }
 
         noble.startScanning();
@@ -352,7 +365,7 @@ function discoverTitanWEServices(titanWeWatch) {
                     console.log('Characteristics found for Titan WE watch 2.');
                     console.log('Titan WE watch 2 is connected and ready to be used.');
                     if (!isLightsON) {
-                        turnONLightsWithDelay();
+                        turnONLightsAndTvWithDelay();
                     }
                 }
                 if (!isTitanWe2Found || !isTitanWe1Found) {
@@ -363,15 +376,17 @@ function discoverTitanWEServices(titanWeWatch) {
     });
 }
 
-function turnONLightsWithDelay() {
+function turnONLightsAndTvWithDelay() {
     console.log('Turning lights ON sequence initiated...');
     setTimeout(() => {
         console.log(`isTitanWE2Found: ${isTitanWe2Found}`);
         if (isTitanWe2Found) {
-            console.log('Turning lights ON...');
+            console.log('Turning lights and TV ON...');
             isLightsON = true;
+            isTvON = true;
             switch1.writeSync(1);
             switch2.writeSync(1);
+            switch3.writeSync(1);
             broadcastStateChange();
         }
     }, TIME_DELAY_TO_TURN_LIGHTS_ON);
@@ -390,6 +405,20 @@ function turnOFFLights() {
     isLightsON = false;
     switch1.writeSync(0);
     switch2.writeSync(0);
+    broadcastStateChange();
+}
+
+function turnONTv() {
+    console.log('Turning TV ON...');
+    isTvON = true;
+    switch3.writeSync(1);
+    broadcastStateChange();
+}
+
+function tutnOFFTv() {
+    console.log('Turning lights OFF...');
+    isTvON = false;
+    switch3.writeSync(0);
     broadcastStateChange();
 }
 
@@ -503,6 +532,7 @@ function changeScene() {
 function broadcastStateChange() {
     var result = { 
         status: 'OK',
+        tv: isTvON,
         lights: isLightsON,
         sequence: isInChangeThemeMode,
       }
