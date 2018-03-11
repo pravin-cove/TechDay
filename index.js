@@ -170,14 +170,14 @@ usonic.init((error) => {
 function waveDetect(distances) {
     var distance = statistics.median(distances);
 
-    // process.stdout.clearLine();
-    // process.stdout.cursorTo(0);
+     process.stdout.clearLine();
+     process.stdout.cursorTo(0);
 
     if (distance < 0) {
         // process.stdout.write('Error: Measurement timeout.\n');
         // console.log('Error in measurement.');
     } else {
-        // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+         process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < DIFFERENCE_IN_DISTANCE && prevDistance > DIFFERENCE_IN_DISTANCE) {
             changeScene();
         }
