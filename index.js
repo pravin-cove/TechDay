@@ -43,7 +43,7 @@ var TRIGGER_PIN = 23;
 var TIMEOUT = 750;
 var DELAY = 20;
 var MEASUREMENT_PER_SAMPLE = 5;
-var DIFFERENCE_IN_DISTANCE = 50;
+var DIFFERENCE_IN_DISTANCE = 110;
 // RSSI update interval
 var RSSI_UPDATE_INTERVAL = 2000;
 var titanWE1RssiUpdates;
@@ -170,14 +170,14 @@ usonic.init((error) => {
 function waveDetect(distances) {
     var distance = statistics.median(distances);
 
-     process.stdout.clearLine();
-     process.stdout.cursorTo(0);
+    // process.stdout.clearLine();
+    // process.stdout.cursorTo(0);
 
     if (distance < 0) {
         // process.stdout.write('Error: Measurement timeout.\n');
         // console.log('Error in measurement.');
     } else {
-         process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
+        // process.stdout.write('Distance: ' + distance.toFixed(2) + ' cm');
         if (distance < DIFFERENCE_IN_DISTANCE && prevDistance > DIFFERENCE_IN_DISTANCE) {
             changeScene();
         }
