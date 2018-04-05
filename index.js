@@ -77,7 +77,7 @@ var THEME_CHANGE_INERVAL = 5000;
 var changeTheme;
 var isInChangeThemeMode = false;
 var lightBrightness;
-var GROUP_ID = 1;
+var GROUP_ID = 3;
 // Port for socket
 var PORT = process.env.PORT || 3000;
 /**
@@ -276,7 +276,7 @@ huejay.discover()
                 hueBridgeClient.bridge.isAuthenticated()
                     .then(() => {
                         console.log('Successful authentication');
-                        getAllGroup();
+                        // getAllGroup(); // TO GET ALL CONFIGURED ROOMS
                     })
                     .catch(error => {
                         console.log('Could not authenticate');
@@ -499,7 +499,7 @@ function changeSceneContinuously() {
         changeScene();
         changeTheme = setInterval(() => {
             console.log(`Setting theme -> ${sceneNames[sceneIndex]}`)
-            hueBridgeClient.groups.getById(1)
+            hueBridgeClient.groups.getById(GROUP_ID)
                 .then(group => {
                     group.scene = scenes[sceneIndex];
                     return hueBridgeClient.groups.save(group);
