@@ -512,7 +512,7 @@ function changeSceneContinuously() {
                 })
                 .then(group => {
                     sceneIndex++;
-                    if (sceneIndex === 11) {
+                    if (sceneIndex === scene.length) {
                         sceneIndex = 0;
                     }
                 })
@@ -542,7 +542,7 @@ function changeScene() {
             })
             .then(group => {
                 sceneIndex++;
-                if (sceneIndex === 5) {
+                if (sceneIndex === scene.length) {
                     sceneIndex = 0;
                 }
             })
