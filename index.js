@@ -2,9 +2,10 @@
 /**
  * WATCH CONTROLS
  * 
- * Titan WE watch (Both Watches)
- * Single Press -> TURN ON/OFF both lights
- * Double Press -> Start changing theme for every 20 seconds untill the next double press.
+ * Titan WE watch 
+ * Single Press (GOLD - WATCH 1) -> TURN ON/OFF both lights
+ * Single Press (BLACK - WATCH 2) -> TURN ON/OFF TV
+ * Double Press -> Start changing theme for every 5 seconds untill the next double press.
  * Long Press -> Increase brightness in steps (Brightness levels : 25, 125 254)
  * 
  * Titan WE Black watch
@@ -468,8 +469,11 @@ function toggleBrightness() {
         hueBridgeClient.groups.getAll()
             .then(groups => {
                 for (let group of groups) {
+                    if(group.id == GROUP_ID) {
                     brightness = group.brightness;
+                    }
                 }
+
                 if (brightness <= 25) {
                     brightness = 125;
                 } else if (brightness > 25 && brightness <= 125) {
@@ -477,7 +481,8 @@ function toggleBrightness() {
                 } else {
                     brightness = 25;
                 }
-                hueBridgeClient.groups.getById(1)
+
+                hueBridgeClient.groups.getById(GROUP_ID)
                     .then(group => {
                         group.brightness = brightness;
                         return hueBridgeClient.groups.save(group);
