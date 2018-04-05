@@ -542,7 +542,7 @@ function changeScene() {
             })
             .then(group => {
                 sceneIndex++;
-                if (sceneIndex === scenes.length) {
+                if (sceneIndex === 5) {
                     sceneIndex = 0;
                 }
             })
