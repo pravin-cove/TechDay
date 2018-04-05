@@ -51,7 +51,7 @@ var titanWE2RssiUpdates;
 //Titan WE watch - 1
 var titanWE1;
 var isTitanWe1Found = false;
-var titanWE1MacAddress = '80eacd000c4f' //Gold Watch
+var titanWE1MacAddress = '80eacd001524' //Gold Watch //80eacd000c4f
 //Titan WE watch - 2
 var titanWE2;
 var isTitanWe2Found = false;
