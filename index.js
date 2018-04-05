@@ -68,8 +68,8 @@ var switch2 = new Gpio(22, 'out');
 var switch3 = new Gpio(27, 'out')
 //Define a client for Philips Hue Bridge.
 var hueBridgeClient;
-var scenes = ['ALSAIYkjGcoTqZT', 'zz9M5RxxqRL8Cc2', '0kWGStrvP36KHY6', 'K-AyEndxZK6Kaa3', 'WozW-BVdWQf6k9Z', '8DuWm-MRNH7HIuk', '1-c4mo69pPP0KuD', 'c-erWk-Q5i5DdnD', 'PzFrXlOGzTz8pLs', '7MJTcWq40n1IIJW', '76mpkohdYNKlfcq'];
-var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset', 'Arctic aurora', 'Energize', 'Relax', 'Dimmed', 'Bright', 'Concentrate', 'Nightlight'];
+var scenes = ['4D3uYqE5IYe40zf', '34XU-HrJjYBM8kf', '6wTv3VhY2R8rrKA', '9SF2SNewZPPSQvB', '2od-0fCcCifKfRo'];
+var sceneNames = ['Read', 'Tropical twilight', 'Spring blossom', 'Savanna sunset', 'Arctic aurora'];
 var sceneIndex = 0;
 //Helpers variables
 var isLightsON = false;
