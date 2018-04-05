@@ -278,6 +278,7 @@ huejay.discover()
                     .then(() => {
                         console.log('Successful authentication');
                         // getAllGroup(); // TO GET ALL CONFIGURED ROOMS
+                        getAllScenes(); // TO GET SCENES
                     })
                     .catch(error => {
                         console.log('Could not authenticate');
@@ -586,6 +587,17 @@ function getAllGroup() {
       console.log(`  Type: ${group.type}`);
       console.log(`  Class: ${group.class}`);
       console.log('  Light Ids: ' + group.lightIds.join(', '));
+      console.log();
+    }
+  });
+}
+
+function getAllScenes() {
+    hueBridgeClient.scenes.getAll()
+  .then(scenes => {
+    for (let scene of scenes) {
+      console.log(`Scene [${scene.id}]: ${scene.name}`);
+      console.log('  Lights:', scene.lightIds.join(', '));
       console.log();
     }
   });
